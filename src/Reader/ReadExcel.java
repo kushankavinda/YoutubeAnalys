@@ -63,11 +63,15 @@ public class ReadExcel {
 
 		String number_of_views_string_value, nu_likes_string_value, nu_dislikes_string_value, video_id,commnet_string_value;
 		int number_of_views, nu_likes, nu_dislikes,nu_of_comment;
-        		
+        //create thread videos array
+		ArrayList<String> videos_distinct=new ArrayList<String>();
+		
+		int videos_distinct_checker;
 		for (int i = 1; i < sheet.getRows(); i++) {
-			Cell cell1 = sheet.getCell(5, i);
 			
-			try {
+			videos_distinct_checker=0;
+			try {			
+				Cell cell1 = sheet.getCell(5, i);
 				CellType type = cell1.getType(); 
 						
 				number_of_views_string_value = cell1.getContents();
@@ -91,8 +95,18 @@ public class ReadExcel {
 				//analys comment with Quartile1 values			
 							if(nu_of_comment >quartile_1_of_comments) {
 								Cell cell5 = sheet.getCell(0, i);
-								video_id = cell5.getContents();
-								System.out.println("this is a trending video_id : " + video_id);
+								video_id = cell5.getContents(); 
+								
+								for(int k=0;k<videos_distinct.size();k++) {
+									if(video_id.equals(videos_distinct.get(k).toString())){
+										++videos_distinct_checker;
+									}
+								}
+								if(videos_distinct_checker==0) {
+									System.out.println("There are "+videos_distinct.size()+" trending videos");
+									videos_distinct.add(video_id);
+									System.out.println("this is a trending video_id : " + video_id);
+								}
 							}
 						}		
 					}
@@ -121,7 +135,7 @@ public class ReadExcel {
 		Arrays.sort(array);
 		quartile_1=array[sheet.getRows()/4];
 		
-		System.out.println("quartile_1 : "+quartile_1);
+		//System.out.println("quartile_1 : "+quartile_1);
 		return quartile_1;
 	}
 	public static void main(String[] args) throws IOException, BiffException {
